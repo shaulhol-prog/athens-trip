@@ -41,14 +41,18 @@ const map = L.map('map', { zoomControl: true }).setView([37.9758, 23.7292], 14);
 const streetMap = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   maxZoom: 19
-}).addTo(map);
-const aerialMap = L.tileLayer(
-  'https://api.maptiler.com/maps/satellite-v4/{z}/{x}/{y}.png?key=QFCMBgfrQ0u577cUmnLg',
+});
+const mapTilerKey = 'QFCMBgfrQ0u577cUmnLg';
+const mapTilerLayer = style => L.tileLayer(
+  `https://api.maptiler.com/maps/${style}/{z}/{x}/{y}.png?key=${mapTilerKey}`,
   {
     attribution: '<a href="https://www.maptiler.com/copyright/">&copy; MapTiler</a> · <a href="https://www.openstreetmap.org/copyright">&copy; OpenStreetMap contributors</a>',
     maxZoom: 19
   }
 );
+const lightMap = mapTilerLayer('dataviz-v4-light');
+const aerialMap = mapTilerLayer('satellite-v4');
+const hybridMap = mapTilerLayer('hybrid-v4');
 const mapTilerLogo = L.control({ position: 'bottomleft' });
 mapTilerLogo.onAdd = () => {
   const link = document.createElement('a');
@@ -64,11 +68,16 @@ mapTilerLogo.onAdd = () => {
   link.append(logo);
   return link;
 };
-aerialMap.on('add', () => mapTilerLogo.addTo(map));
-aerialMap.on('remove', () => mapTilerLogo.remove());
+for (const layer of [lightMap, aerialMap, hybridMap]) {
+  layer.on('add', () => mapTilerLogo.addTo(map));
+  layer.on('remove', () => mapTilerLogo.remove());
+}
+lightMap.addTo(map);
 L.control.layers({
-  'Street map': streetMap,
-  'Aerial photos': aerialMap
+  'Light street map': lightMap,
+  'Aerial photos': aerialMap,
+  'Aerial with labels': hybridMap,
+  'OpenStreetMap': streetMap
 }, {}, { position: 'topright', collapsed: false }).addTo(map);
 const pins=L.layerGroup().addTo(map);const lines=L.layerGroup().addTo(map);const markers=new Map();const colorFor=p=>p.category==='Food & cafés'?'#dd9148':p.category==='Books, prints & antiques'?'#8c63a5':p.category==='Shopping'?'#3c91ad':(colors[p.day]||'#536778');const escapeHtml=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const directions=p=>'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(p.name+', '+p.address)+'&travelmode=walking';
 function draw(){pins.clearLayers();lines.clearLayers();markers.clear();for(const d of Object.keys(routes)){if(day!=='All'&&day!==d)continue;L.polyline(routes[d],{color:colors[d],weight:4,opacity:day==='All'?.5:.85,dashArray:'7 7'}).addTo(lines)}const visible=places.filter(p=>(day==='All'||p.day===day||p.day==='Any day')&&enabled.has(p.category));for(const p of visible){const marker=L.circleMarker([p.lat,p.lng],{radius:p.category==='Sightseeing & walks'?7:6,color:'#fff',weight:2,fillColor:colorFor(p),fillOpacity:.95}).addTo(pins);marker.bindPopup('<h3>'+escapeHtml(p.name)+'</h3><span class="tag">'+escapeHtml(p.day)+' · '+escapeHtml(p.category)+'</span><p>'+escapeHtml(p.summary)+'</p><p><b>Trip note</b> '+escapeHtml(p.note)+'</p><p style="color:#667">'+escapeHtml(p.address)+'</p><a target="_blank" rel="noopener" href="'+directions(p)+'">Walking directions ↗</a>');markers.set(p.name,marker)}document.getElementById('count').textContent=visible.length+' places shown';document.getElementById('places').innerHTML=visible.map((p,i)=>'<div class="item" data-i="'+i+'"><strong>'+escapeHtml(p.name)+'</strong><span class="tag">'+escapeHtml(p.day)+' · '+escapeHtml(p.category)+'</span><small>'+escapeHtml(p.summary)+'</small><small><b>Trip note</b> '+escapeHtml(p.note)+'</small></div>').join('');document.querySelectorAll('.item').forEach(el=>el.onclick=()=>{const p=visible[+el.dataset.i];map.setView([p.lat,p.lng],16);markers.get(p.name)?.openPopup();if(window.innerWidth<760)document.getElementById('map').scrollIntoView({behavior:'smooth',block:'start'})});if(day!=='All'){const pts=routes[day];if(pts)map.fitBounds(L.latLngBounds(pts),{padding:[25,25]})}}
