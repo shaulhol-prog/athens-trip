@@ -42,17 +42,30 @@ const streetMap = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', 
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   maxZoom: 19
 }).addTo(map);
-const aerialMap = L.tileLayer.wms(
-  'https://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx',
+const aerialMap = L.tileLayer(
+  'https://api.maptiler.com/maps/satellite-v4/{z}/{x}/{y}.png?key=QFCMBgfrQ0u577cUmnLg',
   {
-    layers: 'BASEMAP',
-    format: 'image/jpeg',
-    version: '1.1.0',
-    crs: L.CRS.EPSG4326,
-    attribution: 'Aerial imagery &copy; <a href="https://ktimatologio.gr/e-services/22">Hellenic Cadastre</a>',
+    attribution: '<a href="https://www.maptiler.com/copyright/">&copy; MapTiler</a> · <a href="https://www.openstreetmap.org/copyright">&copy; OpenStreetMap contributors</a>',
     maxZoom: 19
   }
 );
+const mapTilerLogo = L.control({ position: 'bottomleft' });
+mapTilerLogo.onAdd = () => {
+  const link = document.createElement('a');
+  link.href = 'https://www.maptiler.com/';
+  link.target = '_blank';
+  link.rel = 'noopener';
+  link.style.cssText = 'display:block;background:#fff;border-radius:3px;padding:3px 5px';
+  const logo = document.createElement('img');
+  logo.src = 'https://api.maptiler.com/resources/logo.svg';
+  logo.alt = 'MapTiler';
+  logo.width = 72;
+  logo.style.display = 'block';
+  link.append(logo);
+  return link;
+};
+aerialMap.on('add', () => mapTilerLogo.addTo(map));
+aerialMap.on('remove', () => mapTilerLogo.remove());
 L.control.layers({
   'Street map': streetMap,
   'Aerial photos': aerialMap
