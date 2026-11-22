@@ -2,6 +2,7 @@
 :root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#202b35;background:#f8f7f4}*{box-sizing:border-box}body{margin:0}header{padding:16px 18px 12px;background:#fff;border-bottom:1px solid #ddd}h1{font-size:22px;margin:0 0 4px}header p{margin:0;color:#67717a;font-size:13px}.layout{display:grid;grid-template-columns:350px 1fr;height:calc(100dvh - 83px)}aside{overflow:auto;padding:14px;background:#fff;border-right:1px solid #ddd}#map{width:100%;height:100%}.tabs,.filters{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 14px}button{border:1px solid #d6d9dc;border-radius:999px;background:#fff;padding:8px 12px;font-size:13px;cursor:pointer;color:#273540}button.active{background:#202b35;color:white;border-color:#202b35}.item{padding:12px 5px;border-bottom:1px solid #eee;cursor:pointer}.item strong{display:block;font-size:14px}.item small{display:block;color:#67717a;margin-top:4px;line-height:1.4}.tag{display:inline-block;font-size:10px;font-weight:700;border-radius:4px;background:#eff2f4;padding:3px 5px;margin:4px 0}a{color:#176aa2}.leaflet-popup-content{min-width:210px;line-height:1.5}.leaflet-popup-content h3{margin:0 0 4px;font-size:15px}.leaflet-popup-content p{margin:6px 0}.notice{font-size:12px;line-height:1.5;color:#6c7278;background:#f4f5f6;border-radius:9px;padding:10px;margin:12px 0}.count{font-size:12px;color:#64707b}.dot{width:13px;height:13px;border:2px solid white;box-shadow:0 0 0 1px #777;border-radius:50%}.leaflet-control-attribution{font-size:10px!important}@media(max-width:760px){header{padding:12px 14px}h1{font-size:19px}.layout{display:flex;flex-direction:column;height:calc(100dvh - 70px)}#map{height:53%;min-height:260px;order:0}aside{height:47%;order:1;border-right:0;border-top:1px solid #ddd;padding:10px 14px}.tabs,.filters{margin:6px 0 9px}.item{padding:10px 2px}.notice{margin:8px 0}}
 .location-control button{border-radius:4px;box-shadow:0 1px 5px #0005;font-weight:600}.location-control button:disabled{cursor:wait}.location-status:not(:empty){max-width:170px;margin-top:5px;padding:5px 7px;border-radius:4px;background:#fff;color:#202b35;box-shadow:0 1px 5px #0005}
 .day-brief{margin:0 0 14px;padding:10px 12px;background:#f4f5f6;border-radius:8px}.day-brief header{display:flex;gap:6px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:0;background:none;border:0}.day-brief h2{font-size:15px;margin:0}.day-brief p{font-size:13px;line-height:1.5;margin:7px 0 0}.day-brief button{padding:4px 8px}.category-icon{margin-right:4px}.place-marker{display:grid;place-items:center;border:1px solid #4a5055;border-radius:50%;background:#fff;color:#202b35;box-shadow:0 1px 4px #0006;font-size:15px}.filters button:not(.active){border-style:dashed}
+.hotel-marker{background:#202b35;color:#fff;border:3px solid #ffcb63;font-size:21px;font-weight:800;box-shadow:0 1px 6px #0009}
 </style></head><body><header><h1>🇬🇷 Athens · Our Trip Map</h1><p>27 Nov – 1 Dec 2026 · Electra Palace · stroller-friendly, flexible plans</p></header><div class="layout"><aside><strong>Explore by day</strong><div class="tabs" id="days"></div><section id="day-brief" class="day-brief" hidden></section><strong>Show places</strong><div class="filters" id="categories"></div><div id="count" class="count"></div><div id="places"></div><div class="notice">Routes are schematic lines connecting planned stops, <b>not verified pedestrian directions</b>. Pin positions are approximate. Tap “Directions” for live walking navigation in Google Maps. Food and cafés are suggestions, never bookings. Internet required for map tiles.</div></aside><div id="map" aria-label="Interactive Athens map"></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
 const places=[
 {"name":"Electra Palace Athens","address":"18-20 Navarchou Nikodimou, Athens, Greece","note":"Hotel / start","day":"Friday","category":"Sightseeing & walks","lat":37.9738,"lng":23.733,"summary":"Your base for the trip, on a quiet stretch of Plaka near Syntagma. Most of the old-town stops are within walking distance."},
@@ -148,6 +149,13 @@ const pinIcons = Object.fromEntries(categories.map(category => [category, L.divI
   iconAnchor: [13, 13],
   popupAnchor: [0, -11]
 })]));
+const hotelIcon = L.divIcon({
+  className: 'place-marker hotel-marker',
+  html: '<span aria-hidden="true">H</span>',
+  iconSize: [34, 34],
+  iconAnchor: [17, 17],
+  popupAnchor: [0, -15]
+});
 const dayPlans = {
   Friday: {"normal":"Start at Electra Palace and use the first day for an easy loop through Plaka. Look for the old houses and narrow lanes below the Acropolis. If there’s time, browse antique maps and prints at Carolina L. Martens. Ariston is a quick pie stop toward Syntagma.","rain":"Keep the first afternoon close to the hotel. Make the antique-map shop the main outing if it’s open, then stop at Ariston for a pie. Old Prints is another option for maps and engravings if you feel like a longer browse.","stops":["Electra Palace Athens","Carolina L. Martens","Ariston","Electra Palace Athens"],"options":["Old Prints"]},
   Saturday: {"normal":"Start at the Acropolis Museum for the Caryatids and Parthenon gallery. Head north to the central market and Evripidou for spices and cured meats, then explore Psyrri. Ermou and Agia Irini are optional shopping and coffee stops on the way back.","rain":"Give the indoor Acropolis Museum more time. Continue to the covered market halls, then browse indoors at Bahar or Miran. Settle in at Karamanlidika for meze if you want a longer break. The walks between stops are outdoors.","stops":["Electra Palace Athens","Acropolis Museum","Varvakios Central Market","Bahar Spice Shop","Miran","Karamanlidika","Electra Palace Athens"],"options":[]},
@@ -231,11 +239,14 @@ function draw(reframe = false) {
   const tag = place => '<span class="tag">' + categoryIcon(place.category)
     + escapeHtml((rainy ? day : place.day) + ' · ' + place.category) + '</span>';
   for (const place of visible) {
+    const isHotel = place.name === 'Electra Palace Athens';
+    const markerLabel = place.name + ' · ' + (isHotel ? 'Hotel' : place.category);
     const marker = L.marker([place.lat, place.lng], {
-      icon: pinIcons[place.category],
-      title: place.name + ' · ' + place.category
+      icon: isHotel ? hotelIcon : pinIcons[place.category],
+      title: markerLabel,
+      zIndexOffset: isHotel ? 500 : 0
     }).addTo(pins);
-    marker.getElement().setAttribute('aria-label', place.name + ', ' + place.category);
+    marker.getElement().setAttribute('aria-label', markerLabel);
     marker.bindPopup('<h3>' + escapeHtml(place.name) + '</h3>' + tag(place)
       + '<p>' + escapeHtml(place.summary) + '</p><p><b>Trip note</b> ' + escapeHtml(place.note)
       + '</p><p style="color:#667">' + escapeHtml(place.address)
