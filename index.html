@@ -1,7 +1,8 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Athens · Our Trip Map</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>
 :root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#202b35;background:#f8f7f4}*{box-sizing:border-box}body{margin:0}header{padding:16px 18px 12px;background:#fff;border-bottom:1px solid #ddd}h1{font-size:22px;margin:0 0 4px}header p{margin:0;color:#67717a;font-size:13px}.layout{display:grid;grid-template-columns:350px 1fr;height:calc(100dvh - 83px)}aside{overflow:auto;padding:14px;background:#fff;border-right:1px solid #ddd}#map{width:100%;height:100%}.tabs,.filters{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 14px}button{border:1px solid #d6d9dc;border-radius:999px;background:#fff;padding:8px 12px;font-size:13px;cursor:pointer;color:#273540}button.active{background:#202b35;color:white;border-color:#202b35}.item{padding:12px 5px;border-bottom:1px solid #eee;cursor:pointer}.item strong{display:block;font-size:14px}.item small{display:block;color:#67717a;margin-top:4px;line-height:1.4}.tag{display:inline-block;font-size:10px;font-weight:700;border-radius:4px;background:#eff2f4;padding:3px 5px;margin:4px 0}a{color:#176aa2}.leaflet-popup-content{min-width:210px;line-height:1.5}.leaflet-popup-content h3{margin:0 0 4px;font-size:15px}.leaflet-popup-content p{margin:6px 0}.notice{font-size:12px;line-height:1.5;color:#6c7278;background:#f4f5f6;border-radius:9px;padding:10px;margin:12px 0}.count{font-size:12px;color:#64707b}.dot{width:13px;height:13px;border:2px solid white;box-shadow:0 0 0 1px #777;border-radius:50%}.leaflet-control-attribution{font-size:10px!important}@media(max-width:760px){header{padding:12px 14px}h1{font-size:19px}.layout{display:flex;flex-direction:column;height:calc(100dvh - 70px)}#map{height:53%;min-height:260px;order:0}aside{height:47%;order:1;border-right:0;border-top:1px solid #ddd;padding:10px 14px}.tabs,.filters{margin:6px 0 9px}.item{padding:10px 2px}.notice{margin:8px 0}}
 .location-control button{border-radius:4px;box-shadow:0 1px 5px #0005;font-weight:600}.location-control button:disabled{cursor:wait}.location-status:not(:empty){max-width:170px;margin-top:5px;padding:5px 7px;border-radius:4px;background:#fff;color:#202b35;box-shadow:0 1px 5px #0005}
-</style></head><body><header><h1>🇬🇷 Athens · Our Trip Map</h1><p>27 Nov – 1 Dec 2026 · Electra Palace · stroller-friendly, flexible plans</p></header><div class="layout"><aside><strong>Explore by day</strong><div class="tabs" id="days"></div><strong>Show places</strong><div class="filters" id="categories"></div><div id="count" class="count"></div><div id="places"></div><div class="notice">Routes are schematic lines connecting planned stops, <b>not verified pedestrian directions</b>. Pin positions are approximate. Tap “Directions” for live walking navigation in Google Maps. Food and cafés are suggestions, never bookings. Internet required for map tiles.</div></aside><div id="map" aria-label="Interactive Athens map"></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
+.day-brief{margin:0 0 14px;padding:10px 12px;background:#f4f5f6;border-radius:8px}.day-brief header{display:flex;gap:6px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:0;background:none;border:0}.day-brief h2{font-size:15px;margin:0}.day-brief p{font-size:13px;line-height:1.5;margin:7px 0 0}.day-brief button{padding:4px 8px}.category-icon{margin-right:4px}.place-marker{display:grid;place-items:center;border:1px solid #4a5055;border-radius:50%;background:#fff;color:#202b35;box-shadow:0 1px 4px #0006;font-size:15px}.filters button:not(.active){border-style:dashed}
+</style></head><body><header><h1>🇬🇷 Athens · Our Trip Map</h1><p>27 Nov – 1 Dec 2026 · Electra Palace · stroller-friendly, flexible plans</p></header><div class="layout"><aside><strong>Explore by day</strong><div class="tabs" id="days"></div><section id="day-brief" class="day-brief" hidden></section><strong>Show places</strong><div class="filters" id="categories"></div><div id="count" class="count"></div><div id="places"></div><div class="notice">Routes are schematic lines connecting planned stops, <b>not verified pedestrian directions</b>. Pin positions are approximate. Tap “Directions” for live walking navigation in Google Maps. Food and cafés are suggestions, never bookings. Internet required for map tiles.</div></aside><div id="map" aria-label="Interactive Athens map"></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
 const places=[
 {"name":"Electra Palace Athens","address":"18-20 Navarchou Nikodimou, Athens, Greece","note":"Hotel / start","day":"Friday","category":"Sightseeing & walks","lat":37.9738,"lng":23.733,"summary":"Your base for the trip, on a quiet stretch of Plaka near Syntagma. Most of the old-town stops are within walking distance."},
 {"name":"Plaka","address":"Kydathinaion Street, Athens, Greece","note":"Neighborhood","day":"Friday","category":"Sightseeing & walks","lat":37.9728,"lng":23.7308,"summary":"The old neighborhood below the Acropolis, with narrow lanes, neoclassical houses and small churches. The lanes climb and become steeper toward Anafiotika."},
@@ -37,7 +38,7 @@ const places=[
 {"name":"72H Artisanal Bakery","address":"Mitropoleos 27, Athens, Greece","note":"Bakery","day":"Any day","category":"Food & cafés","lat":37.9754,"lng":23.7295,"summary":"A bakery stop for bread and pastries. It’s an easy option for breakfast to take with you."},
 {"name":"Bahar Spice Shop","address":"Evripidou 31, Athens, Greece","note":"Spice shopping","day":"Any day","category":"Food & cafés","lat":37.9798,"lng":23.7263,"summary":"A spice shop on Evripidou Street for herbs, teas and spice blends. Small packets make easy souvenirs."},
 {"name":"Miran","address":"Evripidou 45, Athens, Greece","note":"Delicatessen","day":"Any day","category":"Food & cafés","lat":37.98,"lng":23.7254,"summary":"A traditional Evripidou deli specializing in cured meats such as pastourma and soutzouki. It’s a good stop for picnic supplies or ingredients to take home."}
-];const routes={"Friday": [[37.9738, 23.733], [37.9728, 23.7308], [37.9738, 23.733]], "Saturday": [[37.9738, 23.733], [37.9685, 23.7285], [37.9797, 23.7265], [37.9799, 23.726], [37.9785, 23.7237], [37.9761, 23.73], [37.9738, 23.733]], "Sunday": [[37.9738, 23.733], [37.9761, 23.7253], [37.9765, 23.7225], [37.9764, 23.7238], [37.9762, 23.7231], [37.9746, 23.7222], [37.9739, 23.7199], [37.9738, 23.733]], "Monday": [[37.9738, 23.733], [37.9688, 23.7422], [37.9704, 23.7438], [37.9728, 23.7385], [37.9738, 23.733]]};const colors={"Friday": "#d68b36", "Saturday": "#2789b5", "Sunday": "#b45c8b", "Monday": "#4c956c"};const routeNames={"Friday": ["Electra Palace Athens", "Plaka", "Electra Palace Athens"], "Saturday": ["Electra Palace Athens", "Acropolis Museum", "Varvakios Central Market", "Evripidou Street", "Psyrri / Iroon Square", "Ermou Shopping Street", "Electra Palace Athens"], "Sunday": ["Electra Palace Athens", "Monastiraki Square", "Avissinias Square", "Ifestou Street", "Normanou Street", "Ancient Agora of Athens", "Thissio promenade", "Electra Palace Athens"], "Monday": ["Electra Palace Athens", "Basil & Elise Goulandris Foundation", "Varnava Square", "National Garden", "Electra Palace Athens"]};const days=['All','Friday','Saturday','Sunday','Monday'];const categories=['Sightseeing & walks','Books, prints & antiques','Shopping','Food & cafés'];let day='All';let enabled=new Set(categories);
+];const routes={"Friday": [[37.9738, 23.733], [37.9728, 23.7308], [37.9738, 23.733]], "Saturday": [[37.9738, 23.733], [37.9685, 23.7285], [37.9797, 23.7265], [37.9799, 23.726], [37.9785, 23.7237], [37.9761, 23.73], [37.9738, 23.733]], "Sunday": [[37.9738, 23.733], [37.9761, 23.7253], [37.9765, 23.7225], [37.9764, 23.7238], [37.9762, 23.7231], [37.9746, 23.7222], [37.9739, 23.7199], [37.9738, 23.733]], "Monday": [[37.9738, 23.733], [37.9688, 23.7422], [37.9704, 23.7438], [37.9728, 23.7385], [37.9738, 23.733]]};const colors={"Friday": "#d68b36", "Saturday": "#2789b5", "Sunday": "#b45c8b", "Monday": "#4c956c"};const routeNames={"Friday": ["Electra Palace Athens", "Plaka", "Electra Palace Athens"], "Saturday": ["Electra Palace Athens", "Acropolis Museum", "Varvakios Central Market", "Evripidou Street", "Psyrri / Iroon Square", "Ermou Shopping Street", "Electra Palace Athens"], "Sunday": ["Electra Palace Athens", "Monastiraki Square", "Avissinias Square", "Ifestou Street", "Normanou Street", "Ancient Agora of Athens", "Thissio promenade", "Electra Palace Athens"], "Monday": ["Electra Palace Athens", "Basil & Elise Goulandris Foundation", "Varnava Square", "National Garden", "Electra Palace Athens"]};const days=['All','Friday','Saturday','Sunday','Monday','Tuesday'];const categories=['Sightseeing & walks','Books, prints & antiques','Shopping','Food & cafés'];let day='All';let enabled=new Set(categories);
 const map = L.map('map', { zoomControl: true }).setView([37.9758, 23.7292], 14);
 const streetMap = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -125,7 +126,169 @@ locationControl.onAdd = () => {
   return container;
 };
 locationControl.addTo(map);
-const pins=L.layerGroup().addTo(map);const lines=L.layerGroup().addTo(map);const markers=new Map();const colorFor=p=>p.category==='Food & cafés'?'#dd9148':p.category==='Books, prints & antiques'?'#8c63a5':p.category==='Shopping'?'#3c91ad':(colors[p.day]||'#536778');const escapeHtml=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const directions=p=>'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(p.name+', '+p.address)+'&travelmode=walking';
-function draw(){pins.clearLayers();lines.clearLayers();markers.clear();for(const d of Object.keys(routes)){if(day!=='All'&&day!==d)continue;L.polyline(routes[d],{color:colors[d],weight:4,opacity:day==='All'?.5:.85,dashArray:'7 7'}).addTo(lines)}const visible=places.filter(p=>(day==='All'||p.day===day||p.day==='Any day')&&enabled.has(p.category));for(const p of visible){const marker=L.circleMarker([p.lat,p.lng],{radius:p.category==='Sightseeing & walks'?7:6,color:'#fff',weight:2,fillColor:colorFor(p),fillOpacity:.95}).addTo(pins);marker.bindPopup('<h3>'+escapeHtml(p.name)+'</h3><span class="tag">'+escapeHtml(p.day)+' · '+escapeHtml(p.category)+'</span><p>'+escapeHtml(p.summary)+'</p><p><b>Trip note</b> '+escapeHtml(p.note)+'</p><p style="color:#667">'+escapeHtml(p.address)+'</p><a target="_blank" rel="noopener" href="'+directions(p)+'">Walking directions ↗</a>');markers.set(p.name,marker)}document.getElementById('count').textContent=visible.length+' places shown';document.getElementById('places').innerHTML=visible.map((p,i)=>'<div class="item" data-i="'+i+'"><strong>'+escapeHtml(p.name)+'</strong><span class="tag">'+escapeHtml(p.day)+' · '+escapeHtml(p.category)+'</span><small>'+escapeHtml(p.summary)+'</small><small><b>Trip note</b> '+escapeHtml(p.note)+'</small></div>').join('');document.querySelectorAll('.item').forEach(el=>el.onclick=()=>{const p=visible[+el.dataset.i];map.setView([p.lat,p.lng],16);markers.get(p.name)?.openPopup();if(window.innerWidth<760)document.getElementById('map').scrollIntoView({behavior:'smooth',block:'start'})});if(day!=='All'){const pts=routes[day];if(pts)map.fitBounds(L.latLngBounds(pts),{padding:[25,25]})}}
-function controls(){document.getElementById('days').innerHTML=days.map(d=>'<button class="'+(day===d?'active':'')+'" data-day="'+d+'" style="'+(day===d&&colors[d]?'background:'+colors[d]+';border-color:'+colors[d]:'')+'">'+d+'</button>').join('');document.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{day=b.dataset.day;controls();draw()});document.getElementById('categories').innerHTML=categories.map(c=>'<button class="'+(enabled.has(c)?'active':'')+'" data-cat="'+escapeHtml(c)+'">'+(enabled.has(c)?'✓ ':'')+escapeHtml(c)+'</button>').join('');document.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{const c=b.dataset.cat;if(enabled.has(c))enabled.delete(c);else enabled.add(c);controls();draw()})}controls();draw();setTimeout(()=>map.invalidateSize(),250);
+const pins = L.layerGroup().addTo(map);
+const lines = L.layerGroup().addTo(map);
+const markers = new Map();
+const escapeHtml = value => String(value || '').replace(/[&<>"']/g, c => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+}[c]));
+const directions = place => 'https://www.google.com/maps/dir/?api=1&destination='
+  + encodeURIComponent(place.name + ', ' + place.address) + '&travelmode=walking';
+const categoryIcons = {
+  'Sightseeing & walks': '🏛️',
+  'Books, prints & antiques': '📚',
+  'Shopping': '🛍️',
+  'Food & cafés': '☕'
+};
+const categoryIcon = category => '<span class="category-icon" aria-hidden="true">' + categoryIcons[category] + '</span>';
+const pinIcons = Object.fromEntries(categories.map(category => [category, L.divIcon({
+  className: 'place-marker',
+  html: '<span aria-hidden="true">' + categoryIcons[category] + '</span>',
+  iconSize: [26, 26],
+  iconAnchor: [13, 13],
+  popupAnchor: [0, -11]
+})]));
+const dayPlans = {
+  Friday: {"normal":"Start at Electra Palace and use the first day for an easy loop through Plaka. Look for the old houses and narrow lanes below the Acropolis. If there’s time, browse antique maps and prints at Carolina L. Martens. Ariston is a quick pie stop toward Syntagma.","rain":"Keep the first afternoon close to the hotel. Make the antique-map shop the main outing if it’s open, then stop at Ariston for a pie. Old Prints is another option for maps and engravings if you feel like a longer browse.","stops":["Electra Palace Athens","Carolina L. Martens","Ariston","Electra Palace Athens"],"options":["Old Prints"]},
+  Saturday: {"normal":"Start at the Acropolis Museum for the Caryatids and Parthenon gallery. Head north to the central market and Evripidou for spices and cured meats, then explore Psyrri. Ermou and Agia Irini are optional shopping and coffee stops on the way back.","rain":"Give the indoor Acropolis Museum more time. Continue to the covered market halls, then browse indoors at Bahar or Miran. Settle in at Karamanlidika for meze if you want a longer break. The walks between stops are outdoors.","stops":["Electra Palace Athens","Acropolis Museum","Varvakios Central Market","Bahar Spice Shop","Miran","Karamanlidika","Electra Palace Athens"],"options":[]},
+  Sunday: {"normal":"Browse Monastiraki’s flea-market lanes and Avissinias Square, then spend the afternoon at the Ancient Agora. The Stoa of Attalos puts the ruins in context, and the Temple of Hephaestus is visible from the lower paths. Consider a quick exterior look at Hadrian’s Library or the Roman Agora, or finish with the Acropolis views from Thissio.","rain":"Swap the open-air Agora and flea-market lanes for the Museum of Modern Greek Culture near Monastiraki. Its galleries cover everyday life, crafts and traditions. There are short outdoor crossings between some buildings. Afterward, consider seafood at Atlantikos or yogurt and dessert at Stani.","stops":["Electra Palace Athens","Museum of Modern Greek Culture","Atlantikos","Electra Palace Athens"],"options":["Stani"]},
+  Monday: {"normal":"Spend the morning with Greek and international modern art at the Goulandris Foundation in Pangrati. Varnava Square is an optional café stop. Come back through the National Garden, with time for the Zappeion forecourt if you want a longer walk.","rain":"Make the Goulandris Foundation the centerpiece and spend longer in the galleries. Skip the garden and Zappeion forecourt. On the way back, choose a bakery break or an indoor meal at Nolan if it’s open.","stops":["Electra Palace Athens","Basil & Elise Goulandris Foundation","72H Artisanal Bakery","Electra Palace Athens"],"options":["Nolan"]},
+  Tuesday: {"normal":"Keep the last morning flexible. From the hotel, take a short loop through Plaka or stop at Ariston for a pie if you have time. The stops are close enough to trim the outing to fit your plans.","rain":"Stay near the hotel. Pick up a pie at Ariston or browse for maps and prints at Carolina L. Martens if the shop is open and you have time.","stops":["Electra Palace Athens","Ariston","Electra Palace Athens"],"options":["Carolina L. Martens"],"regular":["Electra Palace Athens","Plaka","Ariston","Electra Palace Athens"]}
+};
+const rainOnlyPlaces = [{
+  name: 'Museum of Modern Greek Culture',
+  address: '10 Areos Street, Monastiraki, Athens',
+  note: 'Sunday rainy-day alternative',
+  day: 'Sunday',
+  category: 'Sightseeing & walks',
+  lat: 37.97545,
+  lng: 23.72613,
+  summary: 'Explore everyday Greek life through clothing, crafts and traditions in a cluster of historic buildings near Monastiraki. Some galleries are reached across an outdoor courtyard.'
+}];
+const placesByName = new Map([...places, ...rainOnlyPlaces].map(place => [place.name, place]));
+const rainDays = new Set();
+const dates = { Friday: '27 Nov', Saturday: '28 Nov', Sunday: '29 Nov', Monday: '30 Nov', Tuesday: '1 Dec' };
+const routeForNames = names => names.map(name => {
+  const { lat, lng } = placesByName.get(name);
+  return [lat, lng];
+});
+const activeRoute = selectedDay => rainDays.has(selectedDay)
+  ? routeForNames(dayPlans[selectedDay].stops)
+  : routes[selectedDay] || routeForNames(dayPlans[selectedDay].regular);
+
+function showBrief() {
+  const brief = document.getElementById('day-brief');
+  brief.hidden = day === 'All';
+  if (brief.hidden) return;
+
+  const rainy = rainDays.has(day);
+  const plan = dayPlans[day];
+  brief.innerHTML = '<header><h2>' + day + ' · ' + dates[day] + '</h2>'
+    + '<button type="button" id="rain-toggle" aria-pressed="' + rainy + '" class="' + (rainy ? 'active' : '') + '">☔ Rainy day</button></header>'
+    + '<p>' + escapeHtml(rainy ? plan.rain : plan.normal) + '</p>';
+  if (rainy) {
+    const mainStops = [...new Set(plan.stops)].slice(1);
+    brief.innerHTML += '<p><b>Suggested order</b> ' + escapeHtml(mainStops.join(' → ')) + '</p>'
+      + (plan.options.length ? '<p><b>Also nearby</b> ' + escapeHtml(plan.options.join(', ')) + '</p>' : '')
+      + '<p>Check opening hours before setting out.</p>';
+  }
+  document.getElementById('rain-toggle').onclick = () => {
+    if (rainDays.has(day)) rainDays.delete(day);
+    else rainDays.add(day);
+    showBrief();
+    document.getElementById('rain-toggle').focus();
+    draw(true);
+  };
+}
+
+function draw(reframe = false) {
+  pins.clearLayers();
+  lines.clearLayers();
+  markers.clear();
+  const rainy = rainDays.has(day);
+  const plan = dayPlans[day];
+  const displayedDays = day === 'All' ? days.slice(1) : [day];
+  for (const selectedDay of displayedDays) {
+    L.polyline(activeRoute(selectedDay), {
+      color: colors[selectedDay] || '#536778',
+      weight: 4,
+      opacity: day === 'All' ? 0.5 : 0.85,
+      dashArray: '7 7'
+    }).addTo(lines);
+  }
+
+  let candidates;
+  if (rainy) {
+    candidates = [...new Set([...plan.stops, ...plan.options])].map(name => placesByName.get(name));
+  } else if (day === 'Tuesday') {
+    candidates = [...new Set(plan.regular)].map(name => placesByName.get(name));
+  } else {
+    candidates = places.filter(place => day === 'All' || place.day === day || place.day === 'Any day');
+    if (day === 'All' && rainDays.has('Sunday')) candidates.push(...rainOnlyPlaces);
+  }
+  const visible = candidates.filter(place => enabled.has(place.category));
+
+  const tag = place => '<span class="tag">' + categoryIcon(place.category)
+    + escapeHtml((rainy ? day : place.day) + ' · ' + place.category) + '</span>';
+  for (const place of visible) {
+    const marker = L.marker([place.lat, place.lng], {
+      icon: pinIcons[place.category],
+      title: place.name + ' · ' + place.category
+    }).addTo(pins);
+    marker.getElement().setAttribute('aria-label', place.name + ', ' + place.category);
+    marker.bindPopup('<h3>' + escapeHtml(place.name) + '</h3>' + tag(place)
+      + '<p>' + escapeHtml(place.summary) + '</p><p><b>Trip note</b> ' + escapeHtml(place.note)
+      + '</p><p style="color:#667">' + escapeHtml(place.address)
+      + '</p><a target="_blank" rel="noopener" href="' + directions(place) + '">Walking directions ↗</a>');
+    markers.set(place.name, marker);
+  }
+  document.getElementById('count').textContent = visible.length + ' places shown';
+  document.getElementById('places').innerHTML = visible.map((place, index) => '<div class="item" data-i="'
+    + index + '"><strong>' + escapeHtml(place.name) + '</strong>' + tag(place)
+    + '<small>' + escapeHtml(place.summary) + '</small><small><b>Trip note</b> '
+    + escapeHtml(place.note) + '</small></div>').join('');
+  document.querySelectorAll('.item').forEach(element => {
+    element.onclick = () => {
+      const place = visible[Number(element.dataset.i)];
+      map.setView([place.lat, place.lng], 16);
+      markers.get(place.name).openPopup();
+      if (window.innerWidth < 760) document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+  });
+  if (reframe && day !== 'All') {
+    const points = rainy ? routeForNames([...plan.stops, ...plan.options]) : activeRoute(day);
+    map.fitBounds(L.latLngBounds(points), { padding: [25, 25], maxZoom: 16 });
+  }
+}
+
+function controls() {
+  document.getElementById('days').innerHTML = days.map(value => '<button class="'
+    + (day === value ? 'active' : '') + '" data-day="' + value + '" aria-pressed="' + (day === value)
+    + '">' + value + '</button>').join('');
+  document.querySelectorAll('[data-day]').forEach(button => {
+    button.onclick = () => {
+      day = button.dataset.day;
+      controls();
+      document.querySelector('[data-day].active').focus();
+      draw(true);
+    };
+  });
+  document.getElementById('categories').innerHTML = categories.map(category => '<button class="'
+    + (enabled.has(category) ? 'active' : '') + '" aria-pressed="' + enabled.has(category) + '" data-cat="'
+    + escapeHtml(category) + '">' + categoryIcon(category) + escapeHtml(category) + '</button>').join('');
+  document.querySelectorAll('[data-cat]').forEach(button => {
+    button.onclick = () => {
+      const category = button.dataset.cat;
+      if (enabled.has(category)) enabled.delete(category);
+      else enabled.add(category);
+      controls();
+      [...document.querySelectorAll('[data-cat]')].find(element => element.dataset.cat === category).focus();
+      draw();
+    };
+  });
+  showBrief();
+}
+controls();
+draw();
+setTimeout(() => map.invalidateSize(), 250);
 </script></body></html>
